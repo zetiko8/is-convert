@@ -1,0 +1,8 @@
+.configTable tr td { border:1px solid #dddddd; padding:5px; height: 50px;}
+option:disabled { color: #b3b3b3; }
+.configTable { margin: 10px; float: left;}
+.configTable tr {  border: 2px solid #dddddd; }
+.w3-input{color: #555!important; padding:8px;display:block;border:none;border-bottom:1px solid #ccc;width:100%; font-family:'Open Sans', sans-serif; font-size: 14px;}
+.w3-border-0{border:0!important}.w3-border{border:1px solid #ccc!important}
+.errorMsg {float: right; }
+.reddish {color: #ffcc99};

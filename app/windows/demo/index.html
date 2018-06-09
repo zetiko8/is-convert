@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Iskra Config</title>
+
+    <!-- CSS -->
+    <link href="stylesheets/overRun.css" rel="stylesheet">
+    <link href="stylesheets/cd55adc155bf35900a7a373e70efdcf4-537.css" rel="stylesheet">
+
+    <!--JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div id="configuratorDiv" bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+        <div>
+            <div id="productGroupsDiv" v-show="active">
+
+                <div v-if="errors[0]" class="alert alert-warning errorMsg" style="width:500px;">
+                    {{ errors[0] }}
+                </div>
+                <table class="fckTable" v-else id="productGroupsTable" summary="" border="0" cellpadding="0" cellspacing="0">
+                    <th>{{ titlePgs }}</th>
+                    <th></th>
+                    <tbody>
+                        <tr v-for="productGroup in productGroups" class="fckTR1">
+                            <td>
+                                <button v-on:click="pgButton(productGroup)" type="button" class="btn btn-primary btn-block" v-bind:class="{ active : productGroup.active }">{{ productGroup.name[context.language]
+                                    }}
+                                </button>
+                            </td>
+                            <td width="400px">
+                                {{ productGroup.description[context.language] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div id="productGroupDiv" v-show="active">
+
+                <table class="fckTable" id="productGroupTable" summary="" border="0" cellpadding="0" cellspacing="0">
+                    <th>{{ titlePg }}</th>
+                    <th style="text-align:right">
+                        <button v-if="collapsed" v-on:click="backButton()"> {{ backLabel }} </button>
+                    </th>
+                    <tbody>
+                        <tr v-for="product in products" v-if="!product.collapsed" class="fckTR1">
+                            <td>
+                                <button v-on:click="pButton(product)" type="button" class="btn btn-primary btn-block" width="300px" v-bind:class="{ active : product.active }">{{ product.id }}</button>
+                            </td>
+                            <td width="400px">
+                                {{ product.description[context.language] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+                <div v-for="error in errors" class="alert alert-warning errorMsg" style="width:500px;">
+                    {{ error }}
+                </div>
+
+
+            </div>
+            <div id="productDiv" v-show="active">
+
+                <br>
+
+
+
+                <table class="fckTable" id="productTable" style="float: left" summary="" border="0" cellpadding="0" cellspacing="0">
+                    <th>{{ id }}</th>
+                    <th style="text-align:right">
+                        <button v-if="changes" v-on:click="reloadButton()"> {{ reloadLabel }} </button>
+                    </th>
+                    <tbody>
+                        <tr v-for="prop in properties" v-bind:id="'row' + prop.id" class="fckTR1" v-bind:title="prop.notes[context.language]" data-toggle="popover"
+                            data-trigger="hover">
+                            <td v-bind:class="{ reddish : prop.error.toLong || prop.error.notSelected }" align="right">
+                                <b>{{ prop.name[context.language] }}
+                                </b>
+                            </td>
+                            <td v-if="isCustomStringProperty(prop)">
+                                <input v-model="prop.value" type="text" v-on:change="setSelected()" style="color: #555!important; padding:8px;display:block;border:none;border-bottom:1px solid #ccc;width:100%; font-family:'Open Sans', sans-serif; font-size: 14px;border:0!important;border:1px solid #ccc!important">
+                            </td>
+                            <td v-else width="400px">
+                                <select v-model="prop.value" v-on:change="setSelected()" width="390" style="width: 390px" class="form-control">
+                                    <option v-for="op in prop.options" v-bind:value="op.code" :disabled="op.disabled" v-bind:title="op.notes[context.language]"
+                                        data-toggle="popover" data-trigger="hover">
+                                        {{ op.code + " : " + op.name[context.language] }}
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="fckTR1">
+                            <td align="right">
+                                <b>{{ orderCodeLabel }}</b>
+                            </td>
+                            <td v-show="active">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <p>{{ orderCode }}</p>
+                            </td>
+                        </tr>
+                        <tr class="fckTR1">
+                            <td align="right">
+                                &nbsp;
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr class="fckTR1">
+                            <td align="right">
+                                &nbsp;
+                            </td>
+                            <td>
+                                <button v-on:click="sendRequest()" class="btn btn-primary">{{ sendRequestLabel }}</button>
+                                <br />
+                                <br />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="float: left; padding: 10px">
+
+                    <br>
+                    <div class="errorMsg" v-for="prop in properties" v-if="prop.error.notSelected">
+                        <ul>
+                            <li style="width:300px;" class="alert alert-warning errorMsg">
+                                {{ notSelectedErrorLabel + " (" + prop.name[context.language] + ")" }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="errorMsg" v-for="prop in properties" v-if="prop.error.toLong">
+                        <ul>
+                            <li style="width:300px;" class="alert alert-warning errorMsg">{{ toLongErrorLabel + " " + (prop.options[0].code).match(/\d+/g).map(Number)
+                                + " (" + prop.name[context.language]
+                                + ")" }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+<script src="javascripts/vue.min.js"></script>
+<script src="javascripts/constraintsCalculator.js"></script>
+<script src="javascripts/configuratorMain2.js"></script>
