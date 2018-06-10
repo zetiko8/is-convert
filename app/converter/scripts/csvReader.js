@@ -43,50 +43,10 @@ function createProductTypeObject(data) {
 
     // podatki se razdelijo v array Stringov od ene omembe "ImeZnacilnosti" do druge.
     data = data.split(naming.property.imeZnacilnosti);
+    
 
-    // ekstrakta podatke o prodktivnem Tipu
-    var productType = $.csv.toObjects(data[0])[0];
-
-    var name = {};
-    var description = {};
-    for (var key in productType) {
-
-        if (key.startsWith("NazivProdukta")) {
-
-            var objTag = "";
-            for (let l = 0; l < key.length; l++) {
-                if (key.charAt(l) == "=") {
-                    for (let ll = l + 1; ll < key.length; ll++) {
-                        objTag += key.charAt(ll);
-                    }
-                }
-            }
-            name[objTag] = productType[key];
-
-            delete productType[key];
-        }
-
-        if (key.startsWith("OpisProdukta")) {
-
-            var objTag = "";
-            for (let l = 0; l < key.length; l++) {
-                if (key.charAt(l) == "=") {
-                    for (let ll = l + 1; ll < key.length; ll++) {
-                        objTag += key.charAt(ll);
-                    }
-                }
-            }
-            description[objTag] = productType[key];
-
-            delete productType[key];
-        }
-    }
-    productType.id = productType.IdProdukta;
-    delete productType.IdProdukta;
-    delete productType[''];
-    productType.name = name;
-    productType.description = description;
-
+    var id = $.csv.toArrays(data[0])[0][0];
+console.log(id);
     // ustvarjanje Značilnosti produktnega tipa
     var properties = [];
 
@@ -97,9 +57,7 @@ function createProductTypeObject(data) {
     }
 
     return {
-        id: productType.id,
-        name: productType.name,
-        description: productType.description,
+        id: id,
         properties: properties
     }
 }
@@ -316,25 +274,10 @@ function createProducts(productsData) {
 }
 
 function createProduct(productType){
-    var name = {};
+    
     var description = {};
 
     for (var key in productType) {
-
-        if (key.startsWith("NazivProdukta")) {
-
-            var objTag = "";
-            for (let l = 0; l < key.length; l++) {
-                if (key.charAt(l) == "=") {
-                    for (let ll = l + 1; ll < key.length; ll++) {
-                        objTag += key.charAt(ll);
-                    }
-                }
-            }
-            name[objTag] = productType[key];
-
-            delete productType[key];
-        }
 
         if (key.startsWith("OpisProdukta")) {
 
@@ -353,8 +296,7 @@ function createProduct(productType){
     }
     productType.id = productType.IdProdukta;
     delete productType.IdProdukta;
-    // delete productType[''];
-    productType.name = name;
+    delete productType[''];
     productType.description = description;
 
     return productType;
@@ -403,6 +345,26 @@ function createInternetGroups(data) {
     } return internetGroups;
 }
 
+function createLabels(data){
+    
+    data = $.csv.toObjects(data);
+    var labels = {}
+    for(var key in data[0]){
+        labels[key] = {};
+    }
+    delete labels['language'];
+    
+    for(var key in labels){
+        for(let i = 0; i<data.length; i++){
+            labels[key][data[i].language] = "";
+            for(var key2 in data[i]){
+                if(key === key2){labels[key][data[i].language]=data[i][key2];}
+            }
+        }
+    }
+    return labels;
+}
+
 module.exports = {
     product: function (data) {
 
@@ -421,6 +383,9 @@ module.exports = {
     },
     internetGroups: function (data) {
         return JSON.stringify(createInternetGroups(data));
+    },
+    labels : function (data){
+        return JSON.stringify(createLabels(data));
     }
 }
 

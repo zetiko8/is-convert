@@ -153,7 +153,7 @@ function readPropopostion(string) {
     return readLogicalProposition(string);
 
     function readLogicalProposition(string) {
-
+        
         // console.log(string);
         // doda oklepaje na začetek in na konec stringa (pomembno kasneje pri funkciji @parseTree)     
         var stmnt = logicNaming.functors.openingParenthesis + string + logicNaming.functors.closingParenthesis;
@@ -291,7 +291,6 @@ function readPropopostion(string) {
      */
     function parseNode(node) {
 
-        console.log(node);
         // 1. Loči elemente in (property, options) od ostalih znakov
         var elements = [];
 
@@ -596,7 +595,8 @@ function getTruth(proposition, truths) {
 
 module.exports = {
     readPropopostion: function (stmnt) {
-
+        
+        if(stmnt === "NOTREQUIRED") {return stmnt;}
         stmnt = readPropopostion(stmnt);
         // console.log(stmnt);
         stmnt = new Proposition(stmnt);

@@ -6,11 +6,18 @@ module.exports = function (data, name) {
 
     if (name.endsWith('InternetneSkupine.csv')) {
         var jsonData = csv.internetGroups(data);
+        console.log(JSON.parse(jsonData));
         return { data: jsonData, name: 'InternetneSkupine'};
     }
     if (name.endsWith('ProduktneSkupine.csv')) {
         var jsonData = csv.productGroups(data);
+        console.log(JSON.parse(jsonData));
         return {data: jsonData, name: 'ProduktneSkupine'};
+    }
+    if (name.endsWith('Napisi.csv')){
+        var jsonData = csv.labels(data);
+        console.log(JSON.parse(jsonData));
+        return {data: jsonData, name: 'Napisi'};
     }
 
     var jsonData = csv.product(data);

@@ -26,17 +26,13 @@ function validateProductType(productType) {
 
     /* VALIDACIJA */
 
-    // prouctType.name
-    // Pogleda, če je nabor znakov ustrezen
-    if (!charSetValidator(productType.name)) { context.wronger = productType.name; throw throwing.invalidCharSet(new throwing.Context(context)); }
     // Pogleda, če name ni undefined
     if (productType.id == null ||productType.id == "") { context.wronger = productType.id; throw throwing.missing(new throwing.Context(context)); }
 
-    // productType.properties
     // Pogleda če lastnosti niso prazne 
     if (productType.properties == null) { context.wronger = productType.properties; throw throwing.invalidObject(new throwing.Context(context)); }
     // pogleda če ima produkt preveč lastnosti
-    if (Object.keys(productType).length > 4) {
+    if (Object.keys(productType).length > 2) {
         context.wronger = productType.name; throw throwing.invalidObject(new throwing.Context(context));
     }
     // validira Properties
