@@ -118,8 +118,8 @@ var pgs = new Vue({
             productGroup.active = true;
         },
         abort: function(){
-            pg.activate(false); pg.clearData();
-            pr.activate(false); pr.clearData();
+            pg.abort = true; pg.clearData();
+            pr.abort = true; pr.clearData();
             this.errors.push(this.canNotLoad[context.language]);
         }
     },
@@ -179,6 +179,7 @@ var pg = new Vue({
         canNotLoadProduct: '',
         context: context,
         active: false,
+        abort: false,
         collapsed: false,
     },
     methods: {
@@ -217,7 +218,7 @@ var pg = new Vue({
                                 loaded.properties[i].options[o].disabled = false;
                             }
                         }
-                        pr.activate(true); pr.setData(loaded, "loaded"); 
+                        pr.setData(loaded, "loaded"); pr.activate(true); 
                     }
                 });
             }
@@ -262,6 +263,7 @@ var pr = new Vue({
         orderCode: "",
         context: context,
         active: false,
+        abort: false,
         changes: false,
     },
     methods: {
@@ -322,7 +324,7 @@ var pr = new Vue({
             return false;
         },
         enforceConstraints: function (depth) {
-            // depth = 11;
+            
             if(depth > 10){pgs.abort(); return;}
             var truths = [];
             for (let i = 0; i < this.properties.length; i++) {
