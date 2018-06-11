@@ -4,7 +4,6 @@ var $ = {
     csv: require(path.join(__dirname, 'libraries/jquery.csv.js'))
 }
 
-var homeLanguage = "en";
 
 
 /**
@@ -44,9 +43,8 @@ function createProductTypeObject(data) {
     // podatki se razdelijo v array Stringov od ene omembe "ImeZnacilnosti" do druge.
     data = data.split(naming.property.imeZnacilnosti);
     
-
     var id = $.csv.toArrays(data[0])[0][0];
-console.log(id);
+
     // ustvarjanje Značilnosti produktnega tipa
     var properties = [];
 
@@ -73,7 +71,6 @@ console.log(id);
  */
 function createPropertyObject(data) {
 
-    // console.log(data);
 
     // string.split(delimeter) odstrani iz rezultata[] delimeter, zato je tu dodan nazaj. To je zapotrebe knjižnice za branje .csv
     data = naming.property.imeZnacilnosti + data;
